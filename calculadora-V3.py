@@ -1,51 +1,72 @@
-import tkinter as tk
+import sys
+from PySide2.QtWidgets import QApplication, QMainWindow, QLabel, QLineEdit, QPushButton
 
-#Janela
-janela=tk.Tk()
-janela["bg"]="red"
-janela.title("Calculadora")
-janela.geometry("185x100+550+300")
+class Calculadora(QMainWindow):
+    def __init__(self):
+        super().__init__()
 
-#Labels
-lb1=tk.Label(janela, text="1º valor", bg="red", fg="white")
-lb1.grid(row=0,column=0)
+        self.setWindowTitle("Calculadora")
+        self.setGeometry(550, 300, 185, 100)
+        self.setStyleSheet("background-color: red;")
 
-lb2=tk.Label(janela, text="2º valor", bg="red", fg="white")
-lb2.grid(row=1,column=0)
+        self.initUI()
 
-lb3=tk.Label(janela, text="", bg="red", fg="white")
-lb3.grid(row=3,column=0)
+    def initUI(self):
+        # Labels
+        lb1 = QLabel("1º valor", self)
+        lb1.setStyleSheet("color: white;")
+        lb1.move(10, 10)
 
-#Caixas de textos
-v1=tk.Entry(janela, width=22)
-v1.grid(row=0,column=1, columnspan=3)
+        lb2 = QLabel("2º valor", self)
+        lb2.setStyleSheet("color: white;")
+        lb2.move(10, 30)
 
-v2=tk.Entry(janela, width=22)
-v2.grid(row=1,column=1, columnspan=3)
+        self.lb3 = QLabel("", self)
+        self.lb3.setStyleSheet("color: white;")
+        self.lb3.move(10, 70)
 
-#Botões
-def bt_1():
-    lb3['text']=float(v1.get())+float(v2.get())
-    
-def bt_2():
-    lb3['text']=float(v1.get())-float(v2.get())
-    
-def bt_3():
-    lb3['text']=float(v1.get())*float(v2.get())
-    
-def bt_4():
-    lb3['text']=float(v1.get())/float(v2.get())
+        # Caixas de texto
+        self.v1 = QLineEdit(self)
+        self.v1.setGeometry(70, 10, 100, 20)
 
-bt1=tk.Button(janela, width=3, text="+", command=bt_1)
-bt1.grid(row=2, column=0, pady=5)
+        self.v2 = QLineEdit(self)
+        self.v2.setGeometry(70, 30, 100, 20)
 
-bt2=tk.Button(janela, width=3, text="-", command=bt_2)
-bt2.grid(row=2, column=1, pady=5)
+        # Botões
+        self.bt1 = QPushButton("+", self)
+        self.bt1.setGeometry(10, 50, 30, 20)
+        self.bt1.clicked.connect(self.bt_1)
 
-bt3=tk.Button(janela, width=3, text="*", command=bt_3)
-bt3.grid(row=2, column=2,  pady=5)
+        self.bt2 = QPushButton("-", self)
+        self.bt2.setGeometry(40, 50, 30, 20)
+        self.bt2.clicked.connect(self.bt_2)
 
-bt4=tk.Button(janela, width=3, text="/", command=bt_4)
-bt4.grid(row=2, column=3,  pady=5)
+        self.bt3 = QPushButton("*", self)
+        self.bt3.setGeometry(70, 50, 30, 20)
+        self.bt3.clicked.connect(self.bt_3)
 
-janela.mainloop()
+        self.bt4 = QPushButton("/", self)
+        self.bt4.setGeometry(100, 50, 30, 20)
+        self.bt4.clicked.connect(self.bt_4)
+
+    def bt_1(self):
+        self.lb3.setText(str(float(self.v1.text()) + float(self.v2.text())))
+
+    def bt_2(self):
+        self.lb3.setText(str(float(self.v1.text()) - float(self.v2.text())))
+
+    def bt_3(self):
+        self.lb3.setText(str(float(self.v1.text()) * float(self.v2.text())))
+
+    def bt_4(self):
+        try:
+            result = float(self.v1.text()) / float(self.v2.text())
+            self.lb3.setText(str(result))
+        except ZeroDivisionError:
+            self.lb3.setText("Erro: divisão por zero")
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    calculadora = Calculadora()
+    calculadora.show()
+    sys.exit(app.exec_())
